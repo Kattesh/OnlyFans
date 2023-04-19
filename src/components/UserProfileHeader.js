@@ -48,7 +48,7 @@ const UserProfileHeader = ({user,isSubscribed,setIsSubscribed}) => {
 
                 <Text style={{fontSize: 20, fontWeight: '600', marginVertical: 5}}>{user.name}</Text>
                 <Text style={{color: 'grey', marginBottom: 10}}>@{user.handle}</Text>
-                <Text style={{lineHeight: 20}}>{user.bio}</Text>
+                <Text style={{lineHeight: 20}} numberOfLines={5}>{user.bio}</Text>
 
                 <Text style={{color: 'grey', marginTop: 20, fontWeight: 'bold'}}>SUBSCRIPTION</Text>
                 <Pressable onPress={() => setIsSubscribed(!isSubscribed)}
@@ -66,7 +66,7 @@ const UserProfileHeader = ({user,isSubscribed,setIsSubscribed}) => {
                         {color: isSubscribed ? 'skyblue' : 'white'},
                     ]}>{user.subscriptionPrice === 0
                         ? 'FOR FREE'
-                        : `$${user.subscriptionPrice} / month`}</Text>
+                        : `$${user.subscriptionPrice.toFixed(2)} / month`}</Text>
                 </Pressable>
             </View>
 
