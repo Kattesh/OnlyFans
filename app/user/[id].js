@@ -10,7 +10,7 @@ import Post from "../../src/components/Post";
 const ProfilePage = () => {
     const [user, setUser] = useState()
     const [posts, setPosts] = useState([])
-    const [isSubscribed, setIsSubscribed] = useState(true)
+    const [isSubscribed, setIsSubscribed] = useState(false)
 
     const {id} = useSearchParams()
 
