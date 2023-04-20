@@ -1,22 +1,25 @@
 import {FlatList, StyleSheet, Text, View} from "react-native";
 import {useSearchParams} from "expo-router";
-import posts from '../../assets/data/posts'
 import {useEffect, useState} from "react";
 import UserProfileHeader from "../../src/components/UserProfileHeader";
-import Post from "../../src/components/Post";
 import {Entypo} from '@expo/vector-icons'
 import {DataStore} from "aws-amplify";
-import {User} from "../../src/models";
+import {User, Post as PostModel} from "../../src/models";
+import Post from "../../src/components/Post";
 
 const ProfilePage = () => {
-    const [user,setUser]=useState()
-    const [isSubscribed, setIsSubscribed] = useState(false)
+    const [user, setUser] = useState()
+    const [posts, setPosts] = useState([])
+    const [isSubscribed, setIsSubscribed] = useState(true)
 
     const {id} = useSearchParams()
+
+    useEffect(() => {
+        DataStore.query(User, id).then(setUser)
+        DataStore.query(PostModel, (post) => post.userID.eq(id)).then(setPosts)
+    }, [id])
+
     // const user = users.find((u) => u.id === id)
-    useEffect(()=>{
-        DataStore.query(User,id).then(setUser)
-    },[id])
     if (!user) {
         return <Text>User not found</Text>
     }
@@ -29,7 +32,7 @@ const ProfilePage = () => {
                     setIsSubscribed={setIsSubscribed}
                 />
                 <View style={{backgroundColor: 'gainsboro', alignItems: 'center', padding: 20}}>
-                    <Entypo name="lock" size={50} color="gray" />
+                    <Entypo name="lock" size={50} color="gray"/>
                     <Text style={{
                         backgroundColor: 'skyblue',
                         padding: 15,

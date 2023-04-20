@@ -1,17 +1,24 @@
 import {View, Text, SafeAreaView, TextInput, Button, Image,} from 'react-native';
-import { useState } from 'react';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import {useState} from 'react';
+import {Feather, Ionicons} from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from 'expo-router';
+import {useRouter} from 'expo-router';
+import {DataStore} from "aws-amplify";
+import {Post} from "../src/models";
+import {useAuthenticator} from "@aws-amplify/ui-react-native";
 
 const NewPost = () => {
     const [text, setText] = useState('');
     const [image, setImage] = useState('');
 
+    const {user} = useAuthenticator()
+
     const router = useRouter();
 
-    const onPost = () => {
+    const onPost = async () => {
         console.warn('Post: ', text);
+        await DataStore.save(new Post({text, likes: 0, userID: user.attributes.sub}))
+
         setText('');
     };
 
@@ -32,16 +39,16 @@ const NewPost = () => {
     };
 
     return (
-        <SafeAreaView style={{ margin: 10 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
+        <SafeAreaView style={{margin: 10}}>
+            <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 20}}>
                 <Ionicons
                     onPress={() => router.back()}
                     name="arrow-back"
                     size={28}
                     color="black"
-                    style={{ marginRight: 10 }}
+                    style={{marginRight: 10}}
                 />
-                <Text style={{ fontWeight: '500', fontSize: 20 }}>New post</Text>
+                <Text style={{fontWeight: '500', fontSize: 20}}>New post</Text>
             </View>
 
             <TextInput
@@ -52,13 +59,13 @@ const NewPost = () => {
                 numberOfLines={3}
             />
 
-            <View style={{ marginVertical: 15 }}>
-                <Feather onPress={pickImage} name="image" size={24} color="gray" />
+            <View style={{marginVertical: 15}}>
+                <Feather onPress={pickImage} name="image" size={24} color="gray"/>
             </View>
 
-            {image && <Image source={{uri:image}} style={{ width: '100%', aspectRatio: 1 }} />}
+            {image && <Image source={{uri: image}} style={{width: '100%', aspectRatio: 1}}/>}
 
-            <Button title="Post" onPress={onPost} />
+            <Button title="Post" onPress={onPost}/>
         </SafeAreaView>
     );
 };

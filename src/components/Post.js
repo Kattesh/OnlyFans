@@ -1,12 +1,20 @@
 import {Image, Text, View} from "react-native";
 import {Entypo, FontAwesome5} from '@expo/vector-icons';
+import {useEffect, useState} from "react";
+import {DataStore} from "aws-amplify";
+import {User} from "../models";
 
 const Post = ({post}) => {
+    const [user, setUser] = useState()
+
+    useEffect(() => {
+        DataStore.query(User, post.userID).then(setUser)
+    }, [])
     return (
         <View style={{marginVertical: 15,}}>
             <View style={{flexDirection: 'row', alignItems: 'center', padding: 5,}}>
                 <Image
-                    src={post.User.avatar}
+                    src={user?.avatar}
                     style={{
                         width: 50,
                         aspectRatio: 1,
@@ -14,8 +22,8 @@ const Post = ({post}) => {
                         marginRight: 10,
                     }}/>
                 <View>
-                    <Text style={{fontWeight: '600', marginBottom: 3, fontSize: 16}}>{post.User.name}</Text>
-                    <Text style={{color: 'grey'}}>@{post.User.handle}</Text>
+                    <Text style={{fontWeight: '600', marginBottom: 3, fontSize: 16}}>{user?.name}</Text>
+                    <Text style={{color: 'grey'}}>@{user?.handle}</Text>
                 </View>
                 <View style={{marginLeft: 'auto', flexDirection: 'row', alignItems: 'center'}}>
                     <Text style={{marginRight: 5, color: 'grey'}}>3 hours ago</Text>
@@ -25,7 +33,10 @@ const Post = ({post}) => {
 
             <Text style={{margin: 10, lineHeight: 18}}>{post.text}</Text>
 
-            <Image src={post.image} style={{width: '100%', aspectRatio: 1}}/>
+            {post.image && (
+                <Image src={post.image} style={{width: '100%', aspectRatio: 1}}/>
+            )}
+
 
             <View style={{margin: 10, flexDirection: 'row'}}>
                 <Entypo name="heart-outlined" size={22} color="skyblue" style={{marginRight: 15}}/>
